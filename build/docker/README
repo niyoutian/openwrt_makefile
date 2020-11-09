@@ -1,0 +1,5 @@
+docker run -it -v /home/steven/study2/dock_home:/home/share:rw sdk:v3
+
+make menuconfig
+make package/upointech/sdnmgr_v2/compile V=s
+
