@@ -132,11 +132,17 @@ define stampfile
 endef
 ```
 
+SCRIPT_DIR  TMP_DIR  STAGING_DIR 定义在rules.mk中
+STAGING_DIR:=$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)
+export TMP_DIR:=$(TOPDIR)/tmp
+SCRIPT_DIR:=$(TOPDIR)/scripts
+
 $(call stampfile,$(curdir),tools,install,,_$(subst $(space),,$(tools_enabled))) 执行结果
+```
 tools/stamp-install:=/home/share/openwrt_cc_v3.0/staging_dir/target-arm-27912x-linux-uclibc/stamp/.tools_install_yynyynynynyyyyynnyynyyyyyynnynyyyyynnyyynnyynnnyy
   $(tools/stamp-install): /home/share/openwrt_cc_v3.0/tmp/.build 
 	@+/home/share/openwrt_cc_v3.0/scripts/timestamp.pl -n $(tools/stamp-install) tools  || make  $(tools/flags-install) tools/install
-	@mkdir -p $$(dirname $(tools/stamp-install))
+	@mkdir -p $$(dirname $(tools/stamp-install))  
 	@touch $(tools/stamp-install)
 
   $(if ,,.SILENT: $(tools/stamp-install))
@@ -146,6 +152,9 @@ tools/stamp-install:=/home/share/openwrt_cc_v3.0/staging_dir/target-arm-27912x-l
   tools//clean:=tools/stamp-install/clean
   tools/stamp-install/clean: FORCE
 	@rm -f $(tools/stamp-install)
+```
+shell 命令dirname取目录名 dirname $(tools/stamp-install) 为
+/home/share/openwrt_cc_v3.0/staging_dir/target-arm-27912x-linux-uclibc/stamp/
 
 例如tools/Makefile中的call stampfile展开的变量
 当这个文件的时间戳比tools目录下的某个文件旧时则会编译tools/install目标
