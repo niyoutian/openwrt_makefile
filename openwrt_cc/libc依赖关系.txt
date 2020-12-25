@@ -1,0 +1,18 @@
+
+
+
+/home/share/openwrt_cc_v3.0/bin/zx279128/packages/base/libc_-1_zx279128.ipk （BuildPackage_libc.txt:150）
+    +
+    +--/home/share/openwrt_cc_v3.0/build_dir/target-arm-27912x-linux-uclibc/toolchain/.built
+    +    +
+    +    +--/home/share/openwrt_cc_v3.0/build_dir/target-arm-27912x-linux-uclibc/toolchain/.configured_yyyyyyy
+    +    +    +
+    +    +    +--/home/share/openwrt_cc_v3.0/build_dir/target-arm-27912x-linux-uclibc/toolchain/.prepared_e0ff10fc1e96653a43cfde9f69c81441
+    +    +    +    +
+    +    +    +    +--/home/share/openwrt_cc_v3.0/build_dir/target-arm-27912x-linux-uclibc/toolchain/.prepared_e0ff10fc1e96653a43cfde9f69c81441_check (BuildPackage_libc.txt:184）
+    +    +
+    +    +--/home/share/openwrt_cc_v3.0/build_dir/target-arm-27912x-linux-uclibc/toolchain/.built_check
+    +
+    +--/home/share/openwrt_cc_v3.0/include/package-ipkg.mk
+    +
+    +--/home/share/openwrt_cc_v3.0/bin/zx279128/packages/base/libgcc_-1_zx279128.ipk
