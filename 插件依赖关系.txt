@@ -1,0 +1,29 @@
+package/upointech/opmaintain/compile
+    +
+    +--package/feeds/packages/glib2/compile
+    +    +
+    +    +--package/feeds/packages/attr/compile
+    +    +
+    +    +--package/feeds/packages/glib2/host/compile
+    +    +
+    +    +--package/feeds/packages/libffi/compile
+    +    +
+    +    +--package/libs/gettext/compile
+    +    +
+    +    +--package/libs/toolchain/compile
+    +    +
+    +    +--package/libs/zlib/compile
+    +    +
+    +    +--package/libs/gettext/compile
+    +    +
+    +    +--package/libs/libiconv/compile
+    +
+    +--package/feeds/packages/jansson/compile
+    +
+    +--package/libs/libubox/compile
+    +
+    +--package/libs/toolchain/compile
+    +
+    +--package/system/uci/compile
+    +
+    +--package/upointech/capi3.release/compile
