@@ -1,0 +1,31 @@
+150a151,154
+>                 config TARGET_HI5663
+>                         bool "Haisi 5663 toolchains"
+>                         help
+>                           Build firmware images with Haisi 5663 external toolchains.
+247a252
+>                 default "arm-hi5663-linux"   if TARGET_HI5663
+272c277
+< 		default "armv7-hsan-linux-gnueabi-"   if TARGET_HI5662 || TARGET_HI5682
+---
+> 		default "armv7-hsan-linux-gnueabi-"   if TARGET_HI5662 || TARGET_HI5682 || TARGET_HI5663
+302c307
+< 		default "/opt/haisi/armv7-hsan-linux-gnueabi"   if TARGET_HI5662 || TARGET_HI5682
+---
+> 		default "/opt/haisi/armv7-hsan-linux-gnueabi"   if TARGET_HI5662 || TARGET_HI5663 || TARGET_HI5682
+316c321
+< 		default "glibc" if TARGET_MT7528 || TARGET_BRCM6858 || TARGET_BRCM6856 || TARGET_BRCM6856X || TARGET_BRCM6846X || TARGET_BRCM6878 || TARGET_BRCM6846 || TARGET_ZTE279131 || TARGET_CA8277 || TARGET_ZXIC2791V1 || TARGET_ZXIC2791V2 || TARGET_ZXIC131 || TARGET_HI5662 || TARGET_HI5682 || TARGET_ZTE279121S || TARGET_RTL960XCFC || TARGET_EN7526 || TARGET_EN7528 || TARGET_EN7580
+---
+> 		default "glibc" if TARGET_MT7528 || TARGET_BRCM6858 || TARGET_BRCM6856 || TARGET_BRCM6856X || TARGET_BRCM6846X || TARGET_BRCM6878 || TARGET_BRCM6846 || TARGET_ZTE279131 || TARGET_CA8277 || TARGET_ZXIC2791V1 || TARGET_ZXIC2791V2 || TARGET_ZXIC131 || TARGET_HI5662 || TARGET_HI5663 || TARGET_HI5682 || TARGET_ZTE279121S || TARGET_RTL960XCFC || TARGET_EN7526 || TARGET_EN7528 || TARGET_EN7580
+330c335
+< 		default "./bin" if TARGET_HUAWEI || TARGET_HUAWEI_5117X || TARGET_HI5662 || TARGET_HI5681 || TARGET_HI5682 || TARGET_HUAWEI_RTOS44 || TARGET_HUAWEI_RTOS44V1 || TARGET_HUAWEI_RTOS44V2
+---
+> 		default "./bin" if TARGET_HUAWEI || TARGET_HUAWEI_5117X || TARGET_HI5662 || TARGET_HI5663 || TARGET_HI5681 || TARGET_HI5682 || TARGET_HUAWEI_RTOS44 || TARGET_HUAWEI_RTOS44V1 || TARGET_HUAWEI_RTOS44V2
+352c357
+< 		default "./armv7-hsan-linux-gnueabi/sysroot/usr/include" if  TARGET_HI5662 || TARGET_HI5682
+---
+> 		default "./armv7-hsan-linux-gnueabi/sysroot/usr/include" if  TARGET_HI5662 || TARGET_HI5663 || TARGET_HI5682
+375c380
+< 		default "./armv7-hsan-linux-gnueabi/sysroot/lib" if TARGET_HI5662 || TARGET_HI5682
+---
+> 		default "./armv7-hsan-linux-gnueabi/sysroot/lib" if TARGET_HI5662 || TARGET_HI5663 || TARGET_HI5682

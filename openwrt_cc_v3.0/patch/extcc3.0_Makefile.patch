@@ -1,0 +1,10 @@
+71a72,80
+> ifeq ($(CONFIG_TARGET_sd5117x),y)
+> 	cp $(TOOLCHAIN_LIB_DIRS)/libdl.so.2 $(STAGING_DIR)/usr/lib
+> 	cp $(TOOLCHAIN_LIB_DIRS)/libresolv.so.2 $(STAGING_DIR)/usr/lib
+> 	cp $(TOOLCHAIN_LIB_DIRS)/libm.so.6 $(STAGING_DIR)/usr/lib
+> endif
+> ifdef CONFIG_TARGET_zx279127||CONFIG_TARGET_zx279128
+> 	rm -rf $(STAGING_DIR)/usr/lib/libz.so.1.2.8
+> 	cp $(TOOLCHAIN_LIB_DIRS)/libz.so.1.2.8 $(STAGING_DIR)/usr/lib
+> endif
