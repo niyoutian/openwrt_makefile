@@ -71,6 +71,7 @@ print("@target\n");
 foreach my $word (@target) {
         next if ($word =~ m/extcc/);
         next if ($word =~ m/testapp/);
+        next if ($word =~ m/u01/);
 	printf("$word is not the right target!\n");
         exit(1);
 }
@@ -96,6 +97,9 @@ for my $filename (@confs_files) {
         } elsif ($word eq "extcc3.0") {
             printf("$filename:$word\n");
             system("sed -i 's/# CONFIG_PACKAGE_extccv3 is not set/CONFIG_PACKAGE_extccv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";		
+        } elsif ($word eq "u01") {
+            printf("$filename:$word\n");
+            system("sed -i 's/# CONFIG_PACKAGE_u01v3 is not set/CONFIG_PACKAGE_u01v3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
         }
         system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
         system("make package/upointech/$word/clean") == 0 or die "[$filename:$word] make package/upointech/$word/clean failed:$?";
