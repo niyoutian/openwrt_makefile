@@ -43,8 +43,13 @@ for example:
   ./$P --target testapp
   ./$P --target u01
   ./$P --target extcc
+  ./$P --target extccv3
   ./$P --target opmaintain
-  $P --target testapp,extcc,u01,inter_connd,opmaintain
+  ./$P --target opmaintainv3
+  ./$P --target inter_connd
+  ./$P --target inter_conndv3
+  ./$P --target leakmonitor
+  ./$P --target testapp,extcc,u01,inter_connd,opmaintain
 EOM
 
         exit($exitcode);
@@ -69,29 +74,29 @@ help(0) if ($help);
 
 my $count = 0;
 
-foreach my $word (@target) {
-        next if ($word =~ m/extcc/);
-        next if ($word =~ m/testapp/);
-        next if ($word =~ m/u01/);
-	next if ($word =~ m/inter_connd/);
-	next if ($word =~ m/opmaintain/);
-	printf("$word is not the right target!\n");
-        exit(1);
-}
-
 sub build_sdk3 {
+    foreach my $word (@target) {
+        next if ($word eq "extccv3");
+        next if ($word eq "testapp");
+        next if ($word eq "u01");
+        next if ($word eq "inter_conndv3");
+        next if ($word eq "opmaintainv3");
+	next if ($word eq "leakmonitor");
+        printf("$word is not the right target!\n");
+        exit(1);
+    }
     my $confs_dir = "$root_dir/confs";
     my @confs_files=get_all_conffiles($confs_dir);
     for my $filename (@confs_files) {
         next if ($filename eq '.' or $filename eq '..');
         next if (!($filename =~ m/^.+\.config$/));
-        next if ($filename eq 'hi5663.config');
+        #next if ($filename eq 'hi5681.config');
         #    $count++;
         #    next if ($count < 25);
         next if ($filename eq 'zx279127.config');
         next if ($filename eq 'zx279128.config');
-        next if ($filename eq 'sd5117x.config');
-        next if ($filename eq 'zx279131.config');
+        #next if ($filename eq 'sd5117x.config');
+        #next if ($filename eq 'zx279131.config');
         printf("compile $filename ...\n");
         system("rm -f .config") == 0 or die "[$filename] rm -f .config failed:$?";
         system("ln -sf confs/$filename .config") == 0 or die "[$filename] ln -sf confs/$filename .config failed:$?";
@@ -113,13 +118,16 @@ sub build_sdk3 {
 			} elsif ($word eq "u01") {
 				printf("$filename:$word\n");
 				system("sed -i 's/# CONFIG_PACKAGE_u01v3 is not set/CONFIG_PACKAGE_u01v3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
-			} elsif ($word eq "inter_connd") {
+			} elsif ($word eq "inter_conndv3") {
 				printf("$filename:$word\n");
 				system("sed -i 's/# CONFIG_PACKAGE_inter_conndv3 is not set/CONFIG_PACKAGE_inter_conndv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
-			} elsif ($word eq "opmaintain") {
+			} elsif ($word eq "opmaintainv3") {
 			    printf("$filename:$word\n");
 			    system("sed -i 's/# CONFIG_PACKAGE_opmaintainv3 is not set/CONFIG_PACKAGE_opmaintainv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
-		    }
+		    } elsif ($word eq "leakmonitor") {
+                printf("$filename:$word\n");
+                system("sed -i 's/# CONFIG_PACKAGE_leakmonitor is not set/CONFIG_PACKAGE_leakmonitor=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+            }
 
 			system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
 			system("make package/upointech/$word/clean") == 0 or die "[$filename:$word] make package/upointech/$word/clean failed:$?";
@@ -133,6 +141,16 @@ sub build_sdk3 {
 }
 
 sub build_sdk2 {
+    foreach my $word (@target) {
+        next if ($word eq "extcc");
+        next if ($word eq "testapp");
+        next if ($word eq "u01");
+        next if ($word eq "inter_connd");
+        next if ($word eq "opmaintain");
+        next if ($word eq "leakmonitor");
+        printf("$word is not the right target!\n");
+        exit(1);
+    }
     my $confs_dir = "$root_dir";
     print "build_sdk2 \n";
     print "confs_dir=$confs_dir\n";
@@ -161,7 +179,7 @@ sub build_sdk2 {
             system("make defconfig") == 0 or die "[$filename:$word] make defconfig failed:$?";
 			if ($word eq "testapp") {
 				printf("$filename:$word\n");
-				system("sed -i 's/# CONFIG_PACKAGE_testappv3 is not set/CONFIG_PACKAGE_testappv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+				system("sed -i 's/# CONFIG_PACKAGE_testapp is not set/CONFIG_PACKAGE_testapp=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
 			} elsif ($word eq "extcc") {
 				printf("$filename:$word\n");
 				system("sed -i 's/# CONFIG_PACKAGE_extcc is not set/CONFIG_PACKAGE_extcc=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";		
@@ -170,10 +188,14 @@ sub build_sdk2 {
 				system("sed -i 's/# CONFIG_PACKAGE_u01 is not set/CONFIG_PACKAGE_u01=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
 			} elsif ($word eq "inter_connd") {
 				printf("$filename:$word\n");
-				system("sed -i 's/# CONFIG_PACKAGE_inter_conndv3 is not set/CONFIG_PACKAGE_inter_conndv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+				system("sed -i 's/# CONFIG_PACKAGE_inter_connd is not set/CONFIG_PACKAGE_inter_connd=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
 			} elsif ($word eq "opmaintain") {
                 printf("$filename:$word\n");
-                system("sed -i 's/# CONFIG_PACKAGE_opmaintainv3 is not set/CONFIG_PACKAGE_opmaintainv3=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+                system("sed -i 's/# CONFIG_PACKAGE_curl is not set/CONFIG_PACKAGE_curl=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+                system("sed -i 's/# CONFIG_PACKAGE_opmaintain is not set/CONFIG_PACKAGE_opmaintain=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
+            } elsif ($word eq "leakmonitor") {
+                printf("$filename:$word\n");
+                system("sed -i 's/# CONFIG_PACKAGE_leakmonitor is not set/CONFIG_PACKAGE_leakmonitor=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
             }
 			system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
 			system("make package/upointech/$word/clean") == 0 or die "[$filename:$word] make package/upointech/$word/clean failed:$?";
@@ -186,6 +208,10 @@ my $sdk_ver = 0;
 $sdk_ver = 2 if ($root_dir =~ /openwrt_cc/);
 $sdk_ver = 3 if ($root_dir =~ /openwrt_cc_v3.0/);
 print "sdk_ver = $sdk_ver\n";
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+printf("build start time %04d-%02d-%02d %02d:%02d:%02d\n", $year+1900, $mon, $mday, $hour, $min, $sec);
 build_sdk2() if ($sdk_ver == 2);
 build_sdk3() if ($sdk_ver == 3);
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+printf("build stop time %04d-%02d-%02d %02d:%02d:%02d\n", $year+1900, $mon, $mday, $hour, $min, $sec);
 exit(0);
