@@ -11,7 +11,7 @@ my $root_dir = getcwd;
 
 my $P = $0;
 $P =~ s@.*/@@g;
-my $V = 'by niyoutian 2021-02-19';
+my $V = 'by niyoutian 2021-05-20';
 
 my @target = ();
 
@@ -40,6 +40,7 @@ Options:
   -h, --help, --version      display this help and exit
 
 for example:
+  ./$P --target framework
   ./$P --target testapp
   ./$P --target u01
   ./$P --target extcc
@@ -93,9 +94,9 @@ sub build_sdk3 {
         #next if ($filename eq 'hi5681.config');
         #    $count++;
         #    next if ($count < 25);
-        next if ($filename eq 'zx279127.config');
-        next if ($filename eq 'zx279128.config');
-        #next if ($filename eq 'sd5117x.config');
+        #next if ($filename eq 'zx279127.config');
+        #next if ($filename eq 'zx279128.config');
+        #next if ($filename ne 'sd5117x.config');
         #next if ($filename eq 'zx279131.config');
         printf("compile $filename ...\n");
         system("rm -f .config") == 0 or die "[$filename] rm -f .config failed:$?";
@@ -106,6 +107,9 @@ sub build_sdk3 {
                 my $tmp_dir = "$root_dir/bin/$temp/packages/base";
                 my @file_list = glob "$tmp_dir/$word*$temp.ipk";
                 next if (@file_list);
+            }
+            if ($filename eq 'sd5117x.config') {
+                system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
             }
             printf("make defconfig $filename $word\n");
             system("make defconfig") == 0 or die "[$filename:$word] make defconfig failed:$?";
@@ -128,8 +132,9 @@ sub build_sdk3 {
                 printf("$filename:$word\n");
                 system("sed -i 's/# CONFIG_PACKAGE_leakmonitor is not set/CONFIG_PACKAGE_leakmonitor=y/g' .config") == 0 or die "[$filename:$word] modify .config failed:$?";
             }
-
-			system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
+            if ($filename ne 'sd5117x.config') {   
+		        system("make prepare") == 0 or die "[$filename:$word] make prepare failed:$?";
+            }
 			system("make package/upointech/$word/clean") == 0 or die "[$filename:$word] make package/upointech/$word/clean failed:$?";
 			if ($word eq "opmaintain") {
 				system("make package/network/utils/curl/clean") == 0 or die "[$filename:$word] make  package/network/utils/curl/clean failed:$?";
@@ -204,14 +209,74 @@ sub build_sdk2 {
     }
 }
 
+sub build_frame2 {
+    my $confs_dir = "$root_dir";
+    my @confs_files=get_all_conffiles($confs_dir);
+    for my $filename (@confs_files) {
+        next if ($filename eq '.' or $filename eq '..');
+        next if (!($filename =~ m/^.+\.config$/));
+        printf("compile $filename ...\n");
+        if ($continue eq 1) {
+            my $temp = $filename =~ s/^.*-(.*).config$/$1/r;
+            my $temp2 = $filename =~ s/^(.*)-.*.config$/$1/r;
+            $temp = "zx279100" if ($temp eq "279100");
+            $temp = "zx279127" if ($temp eq "279127");
+            $temp = "zx279128" if ($temp eq "279128");
+            my $tmp_dir = "$root_dir/bin";
+            my $first = uc($temp2);
+            my $second = uc($temp);
+            my $temp3 = join("_","$tmp_dir/$temp/FRAMEWORK_$first","$second","rootfs.tar.gz");
+            print ("check $temp3\n");
+            next if (-e $temp3);
+        }
+        system("rm -f .config") == 0 or die "[$filename] rm -f .config failed:$?";
+        system("ln -sf $filename .config") == 0 or die "[$filename] ln -sf $filename .config failed:$?";
+        system("make prepare") == 0 or die "[$filename] make prepare failed:$?";
+        system("make fw.bin") == 0 or die "[$filename] make fw.bin failed:$?";
+    }
+}
+
+sub build_frame3 {
+    my $confs_dir = "$root_dir/3.0";
+    my @confs_files=get_all_conffiles($confs_dir);
+    for my $filename (@confs_files) {
+        next if ($filename eq '.' or $filename eq '..');
+        next if (!($filename =~ m/^.+\.config$/));
+#        next if ($filename eq 'huawei-rtos44.config');
+        printf("compile $filename ...\n");
+        if ($continue eq 1) {
+            my $temp = $filename =~ s/^.*-(.*).config$/$1/r;
+            my $temp2 = $filename =~ s/^(.*)-.*.config$/$1/r;
+            my $tmp_dir = "$root_dir/bin";
+            my $first = uc($temp2);
+            my $second = uc($temp);
+            my $temp3 = join("_","$tmp_dir/$temp/FRAMEWORK_$first","$second","rootfs.tar.gz");
+            print ("check $temp3\n");
+            next if (-e $temp3);
+        }
+        system("rm -f .config") == 0 or die "[$filename] rm -f .config failed:$?";
+        system("ln -sf 3.0/$filename .config") == 0 or die "[$filename] ln -sf $filename .config failed:$?";
+        system("make prepare") == 0 or die "[$filename] make prepare failed:$?";
+        system("make fw.bin") == 0 or die "[$filename] make fw.bin failed:$?";
+    }
+}
+
 my $sdk_ver = 0;
+my $frame_ver = 0;
 $sdk_ver = 2 if ($root_dir =~ /openwrt_cc/);
 $sdk_ver = 3 if ($root_dir =~ /openwrt_cc_v3.0/);
 print "sdk_ver = $sdk_ver\n";
+$frame_ver = 2 if ($root_dir =~ /framework_v2.0/);
+$frame_ver = 3 if ($root_dir =~ /framework_v3.0/);
+print "frame_ver = $frame_ver\n";
+
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 printf("build start time %04d-%02d-%02d %02d:%02d:%02d\n", $year+1900, $mon, $mday, $hour, $min, $sec);
 build_sdk2() if ($sdk_ver == 2);
 build_sdk3() if ($sdk_ver == 3);
+build_frame2() if ($frame_ver == 2);
+build_frame3() if ($frame_ver == 3);
+
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 printf("build stop time %04d-%02d-%02d %02d:%02d:%02d\n", $year+1900, $mon, $mday, $hour, $min, $sec);
 exit(0);
